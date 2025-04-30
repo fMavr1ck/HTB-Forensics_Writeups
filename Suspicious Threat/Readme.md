@@ -19,6 +19,7 @@ To neutralize this threat, we rename the library to prevent it from being loaded
 
 ![alt text](image-4.png)
 
+After renaming the malicious shared object (hook.so), the ls command begins functioning normally again, confirming that it was indeed being interfered with by the preload.
 With the rootkit effectively bypassed, we are now able to list files and directories properly. After exploring the file system, we successfully locate the flag inside the /var directory.
 
 ![alt text](image-5.png)
