@@ -1,25 +1,25 @@
 ![alt text](image.png)
 
-Fist ssh into server 
+### Initial Access via SSH
+We begin the challenge by establishing an SSH connection to the target server.
 ![alt text](image-1.png)
 
-After succeccfully entering into machine via ssh we are currently in root directory. After trying ls command on root directory or any other directory nothing is listing here. something is strange
+### Suspicious Behavior in the File System
+Upon successful login, we are placed in the root directory. However, executing the ls command in the root or any other directory returns no output, which is highly unusual and indicates that something may be deliberately hidden.
 ![alt text](image-2.png)
 
-Nothing showed useful as ls is not showing any thing ... 
-as the chall says that the rootkit is hiding something so as it will manipulate the shared library .
-
-Using ldd tool list the dynamic dependancies
-
+### Investigating Rootkit Activity
+As the challenge description suggests that a rootkit might be involved, likely manipulating shared libraries to hide files, we proceed to investigate further. Running ls continues to show no output:
+To analyze the shared library dependencies used by common system utilities (like ls), we utilize the ldd command.
 ![alt text](image-3.png)
 
-Found one suspicious library.
-After looking at the lib it is hooking events ..
-The next step is to how can we remove this library from loading ..
+### Detection of a Malicious Shared Library
+One suspicious library stands out. A closer examination indicates that it hooks filesystem-related functions such as readdir and fopen, a typical behavior of rootkits aiming to hide specific files or directories.
+To neutralize this threat, we rename the library to prevent it from being loaded.
 
 ![alt text](image-4.png)
-We discover a suspicious library. Further inspection reveals that this library hooks filesystem-related functions such as readdir and fopen, commonly used by rootkits to hide files and directories:
-Simple technique is to rename the libraray ..
+
+After renaming the malicious shared object (hook.so), the ls command begins functioning normally again, confirming that it was indeed being interfered with by the preload.
 
 ![alt text](image-5.png)
 
@@ -28,7 +28,7 @@ Now as we have sucessfully prevented the malicious preload from ruunig now list 
 
 ![alt text](image-6.png)
 
-BINGO CHALL SOLVED ..!!
+
 
 
 
